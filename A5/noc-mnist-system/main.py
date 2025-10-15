@@ -35,26 +35,22 @@ def parse_arguments():
 
 def main():
     """主函数"""
-    # 解析命令行参数
     args = parse_arguments()
     
     print("=" * 50)
     print("NOC多智能体MNIST分类系统")
     print("=" * 50)
     
-    # 加载MNIST数据
     print("\n加载MNIST数据...")
     (x_train_full, y_train_full), (x_test_full, y_test_full) = load_mnist_data()
     
     '''
-    # 添加这段代码 - 不管命令行参数，强制限制样本数
     print("使用快速训练设置...")
-    max_samples = 1000  # 总共只使用1000个样本
+    max_samples = 1000 
     indices = np.random.choice(len(x_train_full), max_samples, replace=False)
     x_train = x_train_full[indices]
     y_train = y_train_full[indices]
     
-    # 测试集也减少样本
     test_indices = np.random.choice(len(x_test_full), 500, replace=False)
     x_test = x_test_full[test_indices]
     y_test = y_test_full[test_indices]
@@ -63,7 +59,6 @@ def main():
     print(f"测试集减少到: {len(x_test)}个样本")
     '''
 
-    # 如果指定了每类样本数，创建子集
     if args.samples is not None:
         samples_per_class = 500
         print(f"为每个类别选择{args.samples}个样本...")
@@ -77,7 +72,6 @@ def main():
         x_train, y_train = x_train_full, y_train_full
         x_test, y_test = x_test_full, y_test_full
 
-    # 创建系统
     input_shape = (28, 28, 1)
     num_classes = 10
     
@@ -87,9 +81,7 @@ def main():
         num_experts=args.experts
     )
     
-    # 根据模式执行不同操作
     if args.mode == 'train':
-        # 训练模式
         print("\n训练多智能体系统...")
         system.train(
             x_train, y_train,
@@ -98,81 +90,26 @@ def main():
             verbose=True
         )
         
-        # 评估系统
         print("\n评估系统...")
         system.evaluate(x_test, y_test, verbose=True)
 
-        # 添加保存功能
         save_path = 'trained_noc_system2.pkl'
         system.save_system(save_path)
         print(f"系统已保存到: {save_path}")
         
-        # 可视化
         if args.visualize:
             print("\n可视化系统...")
             system.visualize_system()
             
-            # 绘制混淆矩阵
             y_pred = system.predict(x_test)
             plot_confusion_matrix(y_test, y_pred, 
                                  class_names=[str(i) for i in range(10)],
                                  title="MNIST分类混淆矩阵")
-    
-    elif args.mode == 'test':
-        print("测试模式尚未实现，请先训练系统")
         
-    elif args.mode == 'adapt':
-        print("适应模式尚未实现，请先训练系统")
-        
-    elif args.mode == 'experiment':
-        # 实验模式：测试系统在动态环境中的表现
-        print("\n执行动态环境实验...")
-        
-        # 创建动态数据集
-        train_stages, test_stages = create_dynamic_dataset(
-            x_train, y_train, x_test, y_test,
-            stages=config.EXPERIMENT_CONFIG['dynamic_stages']
-        )
-        
-        # 训练系统
-        print("\n阶段1：初始训练...")
-        system.train(
-            train_stages[0][0], train_stages[0][1],
-            som_iterations=args.som_iter,
-            classifier_epochs=args.epochs,
-            verbose=True
-        )
-        
-        # 初始评估
-        initial_accuracy = system.evaluate(
-            test_stages[0][0], test_stages[0][1], verbose=True
-        )
-        
-        # 执行后续阶段
-        stage_accuracies = [initial_accuracy]
-        
-        for i in range(1, len(test_stages)):
-            print(f"\n阶段{i+1}：适应新环境...")
-            
-            # 适应新数据
-            system.adapt(
-                train_stages[i][0], train_stages[i][1],
-                epochs=config.ADAPTATION_CONFIG['adaptation_epochs'],
-                verbose=True
-            )
-            
-            # 评估新环境
-            accuracy = system.evaluate(
-                test_stages[i][0], test_stages[i][1], verbose=True
-            )
-            stage_accuracies.append(accuracy)
-        
-        # 显示结果
         print("\n实验结果:")
         for i, acc in enumerate(stage_accuracies):
             print(f"阶段{i+1}准确率: {acc:.4f}")
         
-        # 可视化
         if args.visualize:
             print("\n可视化系统...")
             system.visualize_system()
