@@ -6,7 +6,6 @@ class NoveltyDetector:
     def __init__(self, som, threshold=None):
         """
         初始化新颖性检测器
-        
         para:
             som: 训练好的SOM对象
             threshold: 新颖性阈值，默认为None(自动确定)

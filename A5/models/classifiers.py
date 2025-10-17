@@ -6,7 +6,6 @@ class LocalClassifier:
     """
     与SOM节点关联的局部分类器
     """
-    
     def __init__(self, input_shape, num_classes, model_type='mlp'):
         """
         初始化局部分类器

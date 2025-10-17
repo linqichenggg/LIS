@@ -23,7 +23,6 @@ for node_str, weights in saved_system['main_agent']['classifiers'].items():
 print("加载专家智能体...")
 if 'expert_agents' in saved_system and saved_system['expert_agents']:
     for expert_data in saved_system['expert_agents']:
-        # 获取保存的agent_id (如果存在)
         original_agent_id = None
         if 'agent_id' in expert_data:
             original_agent_id = expert_data['agent_id']
@@ -84,11 +83,9 @@ plt.title(f'Prediction: {prediction[0]}, True Label: {true_label}')
 plt.axis('off')
 plt.show()
 
-print("评估系统性能...")
 quick_accuracy = system.evaluate(x_test[:500], y_test[:500])
 print(f"系统在500个样本上的准确率: {quick_accuracy:.4f}")
 
-# print("使用完整测试集进行评估...")
 # full_accuracy = system.evaluate(x_test, y_test)
 # print(f"系统在全部测试集上的准确率: {full_accuracy:.4f}")
 

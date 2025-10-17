@@ -59,6 +59,7 @@ def main():
     print(f"测试集减少到: {len(x_test)}个样本")
     '''
 
+    # never used
     if args.samples is not None:
         samples_per_class = 500
         print(f"为每个类别选择{args.samples}个样本...")
