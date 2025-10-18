@@ -3,8 +3,6 @@ from sklearn.model_selection import train_test_split
 
 def preprocess_data(x, flatten=False, normalize=True):
     """
-    预处理数据
-    
     para:
         x: 输入数据
         flatten: 是否将图像展平为向量
@@ -30,9 +28,7 @@ def preprocess_data(x, flatten=False, normalize=True):
 
 def split_data(x, y, test_size=0.2, validation_size=0.1, random_state=42):
     """
-    将数据分割为训练集、验证集和测试集
-    
-    pa ra:
+    para:
         x: 输入数据
         y: 标签
         test_size: 测试集比例
@@ -60,17 +56,7 @@ def split_data(x, y, test_size=0.2, validation_size=0.1, random_state=42):
     return (x_train_val, y_train_val), None, (x_test, y_test)
 
 def augment_data(x, y, augmentation_factor=2):
-    """
-    简单的数据增强
-    
-    para:
-        x: 输入图像数据
-        y: 标签
-        augmentation_factor: 增强倍数
-        
-    return:
-        x_augmented, y_augmented: 增强后的数据和标签
-    """
+
     if len(x.shape) == 3:
         x = x.reshape(x.shape[0], x.shape[1], x.shape[2], 1)
     

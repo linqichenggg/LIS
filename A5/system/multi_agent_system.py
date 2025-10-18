@@ -252,7 +252,7 @@ class MultiAgentSystem:
                 self.coordinator.update_trust(agent.agent_id, agent_accuracy)
         
         if verbose:
-            print(f"System accuracy: {accuracy:.4f}")
+            #print(f"System accuracy: {accuracy:.4f}")
             print("Agent trust scores:")
             shown_agents = {}
             for agent in self.all_agents:

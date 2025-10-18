@@ -6,7 +6,6 @@ import time
 from datetime import datetime
 import os
 
-
 from data.mnist_loader import load_mnist_data, get_mnist_subset, create_dynamic_dataset
 from system.multi_agent_system import MultiAgentSystem
 from utils.visualization import visualize_som_results, plot_confusion_matrix
@@ -34,18 +33,13 @@ def parse_arguments():
     return parser.parse_args()
 
 def main():
-    """主函数"""
     args = parse_arguments()
     
-    print("=" * 50)
-    print("NOC多智能体MNIST分类系统")
-    print("=" * 50)
+    print("多智能体MNIST分类系统")
     
-    print("\n加载MNIST数据...")
     (x_train_full, y_train_full), (x_test_full, y_test_full) = load_mnist_data()
     
     '''
-    print("使用快速训练设置...")
     max_samples = 1000 
     indices = np.random.choice(len(x_train_full), max_samples, replace=False)
     x_train = x_train_full[indices]
@@ -59,7 +53,6 @@ def main():
     print(f"测试集减少到: {len(x_test)}个样本")
     '''
 
-    # never used
     if args.samples is not None:
         samples_per_class = 500
         print(f"为每个类别选择{args.samples}个样本...")
@@ -83,7 +76,6 @@ def main():
     )
     
     if args.mode == 'train':
-        print("\n训练多智能体系统...")
         system.train(
             x_train, y_train,
             som_iterations=args.som_iter,
@@ -107,22 +99,22 @@ def main():
                                  class_names=[str(i) for i in range(10)],
                                  title="MNIST分类混淆矩阵")
         
-        print("\n实验结果:")
-        for i, acc in enumerate(stage_accuracies):
-            print(f"阶段{i+1}准确率: {acc:.4f}")
+        # print("\n实验结果:")
+        # for i, acc in enumerate(stage_accuracies):
+        #     print(f"阶段{i+1}准确率: {acc:.4f}")
         
-        if args.visualize:
-            print("\n可视化系统...")
-            system.visualize_system()
+        # if args.visualize:
+        #     print("\n可视化系统...")
+        #     system.visualize_system()
             
-            plt.figure(figsize=(10, 6))
-            plt.plot(range(1, len(stage_accuracies) + 1), stage_accuracies, marker='o')
-            plt.title('system performance in dynamic environment')
-            plt.xlabel('environment stage')
-            plt.ylabel('accuracy')
-            plt.grid(True, alpha=0.3)
-            plt.xticks(range(1, len(stage_accuracies) + 1))
-            plt.show()
+        #     plt.figure(figsize=(10, 6))
+        #     plt.plot(range(1, len(stage_accuracies) + 1), stage_accuracies, marker='o')
+        #     plt.title('system performance in dynamic environment')
+        #     plt.xlabel('environment stage')
+        #     plt.ylabel('accuracy')
+        #     plt.grid(True, alpha=0.3)
+        #     plt.xticks(range(1, len(stage_accuracies) + 1))
+        #     plt.show()
     
     print("\n程序执行完毕")
 

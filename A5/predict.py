@@ -9,7 +9,7 @@ input_shape = (28, 28, 1)
 num_classes = 10
 system = MultiAgentSystem(input_shape=input_shape, num_classes=num_classes)
 
-with open('/Users/lqcmacmini/cursor/trained_noc_system.pkl', 'rb') as f:
+with open('/Users/lqcmacmini/cursor/trained_noc_system3.pkl', 'rb') as f:
     saved_system = pickle.load(f)
     
 print("加载主智能体...")
@@ -71,7 +71,7 @@ system.main_agent.is_trained = True
 x_test = x_test.astype('float32') / 255.0
 x_test = x_test.reshape(-1, 28, 28, 1)
 
-sample_idx = 43
+sample_idx = 430
 sample = x_test[sample_idx:sample_idx+1]
 true_label = y_test[sample_idx]
 
@@ -83,12 +83,12 @@ plt.title(f'Prediction: {prediction[0]}, True Label: {true_label}')
 plt.axis('off')
 plt.show()
 
-quick_accuracy = system.evaluate(x_test[:500], y_test[:500])
-print(f"系统在500个样本上的准确率: {quick_accuracy:.4f}")
+quick_accuracy = system.evaluate(x_test[:1000], y_test[:1000])
+print(f"Accuracy on 1000 samples: {quick_accuracy:.4f}")
 
 # full_accuracy = system.evaluate(x_test, y_test)
-# print(f"系统在全部测试集上的准确率: {full_accuracy:.4f}")
+# print(f"Accuracy on full test set: {full_accuracy:.4f}")
 
-print(f"系统共有 {len(system.all_agents)} 个智能体:")
-print(f"  - 1个主智能体")
-print(f"  - {len(system.expert_agents)} 个专家智能体")
+print(f"Total number of agents: {len(system.all_agents)}")
+print(f"  - 1 main agent")
+print(f"  - {len(system.expert_agents)} expert agents")

@@ -8,24 +8,10 @@ from models.classifiers import LocalClassifier
 from models.novelty_detector import NoveltyDetector
 
 class NOCAgent:
-    """
-    NOC智能体实现
-    将自组织映射与局部分类器结合，实现自适应分类
-    """
-    
+
     def __init__(self, input_shape, num_classes, map_size=(10, 10), 
                  classifier_type='mlp', agent_id=None, name=None):
-        """
-        初始化NOC智能体
-        
-        参数:
-            input_shape: 输入数据形状
-            num_classes: 类别数量
-            map_size: SOM映射尺寸
-            classifier_type: 分类器类型-cnn
-            agent_id: 智能体ID
-            name: 智能体名称
-        """
+
         self.input_shape = input_shape
         self.num_classes = num_classes
         self.map_size = map_size
@@ -51,14 +37,7 @@ class NOCAgent:
         self.active_nodes = set()
     
     def train_som(self, data, iterations=10000, verbose=True):
-        """
-        训练智能体的SOM映射
-        
-        para:
-            data: 训练数据
-            iterations: 训练迭代次数
-            verbose: 是否打印进度
-        """
+
         if len(data.shape) > 2:
             data = data.reshape(data.shape[0], -1)
             
@@ -68,15 +47,7 @@ class NOCAgent:
             print(f"智能体 {self.name} SOM训练完成，活动节点: {len(np.where(self.som.activation_count > 0)[0])}")
     
     def _create_classifier(self, bmu_idx):
-        """
-        为指定的SOM节点创建分类器
-        
-        para:
-            bmu_idx: SOM节点索引(i,j)
-            
-        return:
-            新创建的分类器
-        """
+
         classifier = LocalClassifier(
             input_shape=self.input_shape,
             num_classes=self.num_classes,
@@ -87,30 +58,14 @@ class NOCAgent:
         return classifier
     
     def _get_classifier(self, bmu_idx):
-        """
-        获取指定节点的分类器，如果不存在则创建
-        
-        para:
-            bmu_idx: SOM节点索引(i,j)
-            
-        return:
-            节点关联的分类器
-        """
+
         bmu_key = tuple(bmu_idx)
         if bmu_key not in self.classifiers:
             return self._create_classifier(bmu_key)
         return self.classifiers[bmu_key]
     
     def map_data(self, data):
-        """
-        将数据映射到SOM上，返回BMU索引列表
-        
-        para:
-            data: 输入数据
-            
-        return:
-            bmu_indices: BMU索引列表
-        """
+
         if len(data.shape) > 2:
             flat_data = data.reshape(data.shape[0], -1)
         else:
@@ -124,16 +79,7 @@ class NOCAgent:
         return np.array(bmu_indices)
     
     def train_classifiers(self, data, labels, epochs=5, min_samples=10, verbose=False):
-        """
-        训练与SOM节点关联的局部分类器
-        
-        para:
-            data: 训练数据
-            labels: 训练标签
-            epochs: 训练轮数
-            min_samples: 训练分类器的最小样本数
-            verbose: 是否打印进度
-        """
+
         if not self.som.trained:
             raise ValueError("必须先训练SOM才能训练分类器")
             
@@ -204,16 +150,7 @@ class NOCAgent:
         self.is_trained = True
     
     def predict(self, x):
-        """
-        对输入数据进行预测
-        
-        para:
-            x: 输入数据
-            
-        return:
-            predictions: 预测类别
-            confidences: 预测置信度
-        """
+
         if not self.is_trained:
             raise ValueError("智能体必须先训练才能进行预测")
             
@@ -251,17 +188,7 @@ class NOCAgent:
         return np.array(predictions), np.array(confidences)
     
     def _find_nearest_classifier_prediction(self, sample, bmu_idx):
-        """
-        当BMU没有关联分类器时，寻找最近的分类器进行预测
-        
-        para:
-            sample: 输入样本
-            bmu_idx: 样本的BMU索引
-            
-        return:
-            class_idx: 预测类别
-            confidence: 预测置信度
-        """
+
         if not self.classifiers:
             return np.random.randint(0, self.num_classes), 0.1
         
@@ -281,16 +208,7 @@ class NOCAgent:
         return pred[0], conf[0]
     
     def detect_novelty(self, x):
-        """
-        检测样本是否为新颖样本
-        
-        para:
-            x: 输入样本
-            
-        return:
-            is_novel: 是否为新颖样本
-            novelty_score: 新颖性分数
-        """
+
         if self.novelty_detector is None:
             return False, 0.0
             
@@ -318,28 +236,14 @@ class NOCAgent:
         return np.array(results), np.array(scores)
     
     def get_expertise_level(self, class_id):
-        """
-        获取智能体对特定类别的专业化程度
-        
-        para:
-            class_id: 类别ID
-            
-        return:
-            expertise_level: 专业化程度(0-1)
-        """
+
         if np.sum(self.expertise) == 0:
             return 0.0
         
         return self.expertise[class_id]
     
     def update_expertise(self, x_val, y_val):
-        """
-        根据验证集更新智能体的专业化信息
-        
-        para:
-            x_val: 验证数据
-            y_val: 验证标签
-        """
+
         if not self.is_trained:
             return
             

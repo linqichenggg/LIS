@@ -6,7 +6,6 @@ import tensorflow as tf
 def load_mnist_data(flatten=False, normalize=True, reshape_for_cnn=True):
     """
     加载MNIST数据集
-    
     para:
         flatten: 是否将图像展平为向量
         normalize: 是否将像素值归一化到[0,1]
@@ -42,7 +41,7 @@ def get_mnist_subset(x, y, classes=None, samples_per_class=None, shuffle=True):
     """
     获取MNIST数据子集
     
-    pa ra:
+    para:
         x: 输入数据
         y: 标签
         classes: 要选择的类别列表，默认为所有类别
@@ -82,7 +81,6 @@ def get_mnist_subset(x, y, classes=None, samples_per_class=None, shuffle=True):
 def create_dynamic_dataset(x_train, y_train, x_test, y_test, stages=3):
     """
     创建一个动态变化的数据集，for concept drift simulation
-    
     para:
         x_train, y_train: 原始训练数据
         x_test, y_test: 原始测试数据
